@@ -12,6 +12,8 @@ document.querySelectorAll(".menu-filters li").forEach((btn) => {
       .querySelector(".menu-filters .filter-active")
       ?.classList.remove("filter-active");
     this.classList.add("filter-active");
+      // يخلي الفلتر المختار يبان قدام اليوزر
+  this.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     let filterValue = this.getAttribute("data-filter");
     iso.arrange({ filter: filterValue });
 
