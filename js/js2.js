@@ -103,6 +103,38 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
     }
   });
+  // لما الهاش يتغير (مثلا من #SIGNATURES لـ #SMOOTHIES)
+window.addEventListener("hashchange", function () {
+  let hash = window.location.hash;
+  if (hash) {
+    let target = document.querySelector(hash);
+    if (target) {
+      // شيل الـ filter-active القديم
+      document
+        .querySelector(".menu-filters .filter-active")
+        ?.classList.remove("filter-active");
+
+      // ضيف الجديد
+      target.classList.add("filter-active");
+
+      // فلترة Isotope
+      let filterValue = target.getAttribute("data-filter");
+      iso.arrange({ filter: filterValue });
+
+      // حرك شريط الفلاتر لحد الفلتر المطلوب
+      const parent = document.querySelector(".menu-filters");
+      const offsetLeft = target.offsetLeft - parent.clientWidth / 2 + target.clientWidth / 2;
+      parent.scrollTo({ left: offsetLeft, behavior: "smooth" });
+
+      // يرجع الصفحة لفوق
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+  }
+});
+
 
   // تعطيل اختصارات F12 و Ctrl+U و Ctrl+Shift+I
   document.addEventListener("keydown", function (e) {
