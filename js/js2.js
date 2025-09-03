@@ -1,37 +1,84 @@
 // //////////////////////////////////////////////////////////
- // init Isotope
-      var iso = new Isotope(".isotope-container .row", {
-        itemSelector: ".col-6",
-        layoutMode: "fitRows",
-      });
+// init Isotope
+var iso = new Isotope(".isotope-container .row", {
+  itemSelector: ".col-6",
+  layoutMode: "fitRows",
+});
 
-      // filter items on click
-      document.querySelectorAll(".menu-filters li").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          document
-            .querySelector(".menu-filters .filter-active")
-            ?.classList.remove("filter-active");
-          this.classList.add("filter-active");
-          let filterValue = this.getAttribute("data-filter");
-          iso.arrange({ filter: filterValue });
-        });
-      });
+// filter items on click
+document.querySelectorAll(".menu-filters li").forEach((btn) => {
+  btn.addEventListener("click", function () {
+    document
+      .querySelector(".menu-filters .filter-active")
+      ?.classList.remove("filter-active");
+    this.classList.add("filter-active");
+    let filterValue = this.getAttribute("data-filter");
+    iso.arrange({ filter: filterValue });
 
-      // arrow back //////////////////////////////////////////////////
-      document
-        .getElementById("back-btn")
-        .addEventListener("click", function () {
-          window.location.href = "../index.html"; // غيرها لاسم صفحة الهوم بتاعتك
-        });
+    // تحديث الهاش في الرابط
+    history.replaceState(null, null, "#" + this.id);
 
-$(document).on('turbolinks:load', function () {
-    const observer = lozad();
-    observer.observe();
-  })
-  if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
+    // يرجع الصفحة لفوق
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+});
+
+// تشغيل الفلتر الافتراضي (بس لو مفيش هاش في الرابط)
+if (!window.location.hash) {
+  let activeFilter = document.querySelector(".menu-filters .filter-active");
+  if (activeFilter) {
+    let filterValue = activeFilter.getAttribute("data-filter");
+    iso.arrange({ filter: filterValue });
   }
-  document.querySelectorAll('img').forEach(img => {
+}
+
+
+// arrow back //////////////////////////////////////////////////
+document
+  .getElementById("back-btn")
+  .addEventListener("click", function () {
+    window.location.href = "../index.html"; // غيرها لاسم صفحة الهوم بتاعتك
+  });
+
+// /////////////////////////////////////////////////////////////////////
+window.addEventListener("DOMContentLoaded", function () {
+  // لو فيه هاش في اللينك (مثلا #SMOOTHIES)
+  let hash = window.location.hash;
+  if (hash) {
+    let target = document.querySelector(hash);
+    if (target) {
+      // شيل الـ filter-active القديم
+      document
+        .querySelector(".menu-filters .filter-active")
+        ?.classList.remove("filter-active");
+      // ضيف الجديد
+      target.classList.add("filter-active");
+
+      // هات قيمة الفلتر من data-filter
+      let filterValue = target.getAttribute("data-filter");
+      iso.arrange({ filter: filterValue });
+
+      // يرجع الصفحة لفوق
+      window.scrollTo({
+        top: 0,
+        behavior: "instant"
+      });
+    }
+  }
+});
+
+// ///////////////////////////////////////////////////////////////////////////////
+$(document).on('turbolinks:load', function () {
+  const observer = lozad();
+  observer.observe();
+})
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+document.querySelectorAll('img').forEach(img => {
   img.setAttribute('draggable', 'false');
 })
 // ///////////////////////////////////////////////////////////////////////////////
@@ -50,9 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // تعطيل اختصارات F12 و Ctrl+U و Ctrl+Shift+I
   document.addEventListener("keydown", function (e) {
-    if (e.key === "F12" || 
-        (e.ctrlKey && e.key === "u") || 
-        (e.ctrlKey && e.shiftKey && e.key === "I")) {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.key.toLowerCase() === "u") ||
+      (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i")
+    ) {
       e.preventDefault();
       alert("تم تعطيل عرض المصدر لحماية المحتوى!");
     }
