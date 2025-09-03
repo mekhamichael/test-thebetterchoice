@@ -13,12 +13,15 @@ document.querySelectorAll(".menu-filters li").forEach((btn) => {
       ?.classList.remove("filter-active");
     this.classList.add("filter-active");
       // يخلي الفلتر المختار يبان قدام اليوزر
-  this.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+const parent = document.querySelector(".menu-filters");
+const offsetLeft = this.offsetLeft - parent.clientWidth / 2 + this.clientWidth / 2;
+parent.scrollTo({ left: offsetLeft, behavior: "smooth" });
     let filterValue = this.getAttribute("data-filter");
     iso.arrange({ filter: filterValue });
 
     // تحديث الهاش في الرابط
     history.replaceState(null, null, "#" + this.id);
+    
 
     // يرجع الصفحة لفوق
     window.scrollTo({
@@ -58,6 +61,10 @@ window.addEventListener("DOMContentLoaded", function () {
         ?.classList.remove("filter-active");
       // ضيف الجديد
       target.classList.add("filter-active");
+// خليه يظهر قدام اليوزر في النص
+const parent = document.querySelector(".menu-filters");
+const offsetLeft = target.offsetLeft - parent.clientWidth / 2 + target.clientWidth / 2;
+parent.scrollTo({ left: offsetLeft, behavior: "smooth" });
 
       // هات قيمة الفلتر من data-filter
       let filterValue = target.getAttribute("data-filter");
